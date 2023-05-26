@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float _movePower = 5f;
     [SerializeField] float _jumpPower = 15f;
     [SerializeField] int _airJumpNum = 1;
+    [SerializeField] int _hp = 1;
     Rigidbody2D _rb = default;
     float _horizontal;
     SpriteRenderer _renderer;
@@ -15,6 +16,8 @@ public class PlayerController : MonoBehaviour
     int _airJump;
     Vector2 _jumpVect;
     bool _jumpVectUp = true;
+    bool _isAliving = true;
+    public int Hp { get { return _hp; } }
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +30,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!_isAliving) { return; }
         if (_jumpVectUp)
         {
             _jumpVect = new Vector2(0, 1).normalized;
@@ -62,5 +66,14 @@ public class PlayerController : MonoBehaviour
     {
         _jumpVectUp = vect;
         _airJump = 1;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Enemy")
+        {
+            _isAliving = false;
+            _hp--;
+        }
     }
 }
